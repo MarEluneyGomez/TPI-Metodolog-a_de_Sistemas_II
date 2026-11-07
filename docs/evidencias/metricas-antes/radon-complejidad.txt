@@ -1,0 +1,18 @@
+main.py
+    F 4:0 menu - A (1)
+sistema.py
+    M 208:4 Sistema.listar - E (33)
+    M 63:4 Sistema.registrar_solicitud - C (19)
+    M 128:4 Sistema.cambiar_estado - C (18)
+    M 276:4 Sistema.reporte - C (14)
+    M 176:4 Sistema.asignar_responsable - C (12)
+    C 13:0 Sistema - C (11)
+    M 41:4 Sistema.registrar_estudiante - B (10)
+    M 21:4 Sistema.cargar - A (3)
+    M 33:4 Sistema.guardar - A (2)
+    M 319:4 Sistema.procesar2 - A (2)
+    M 15:4 Sistema.__init__ - A (1)
+    M 114:4 Sistema.crear_solicitud - A (1)
+
+13 blocks (classes, functions, methods) analyzed.
+Average complexity: B (9.76923076923077)

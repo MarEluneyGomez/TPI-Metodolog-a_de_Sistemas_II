@@ -1,0 +1,36 @@
+main.py
+    LOC: 36
+    LLOC: 32
+    SLOC: 32
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 4
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+sistema.py
+    LOC: 322
+    LLOC: 339
+    SLOC: 306
+    Comments: 2
+    Single comments: 2
+    Multi: 0
+    Blank: 14
+    - Comment Stats
+        (C % L): 1%
+        (C % S): 1%
+        (C + M % L): 1%
+** Total **
+    LOC: 358
+    LLOC: 371
+    SLOC: 338
+    Comments: 2
+    Single comments: 2
+    Multi: 0
+    Blank: 18
+    - Comment Stats
+        (C % L): 1%
+        (C % S): 1%
+        (C + M % L): 1%

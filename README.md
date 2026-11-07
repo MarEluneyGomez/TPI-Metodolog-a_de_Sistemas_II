@@ -13,7 +13,7 @@ filtrarlas y generar un reporte.
 ## Requisitos
 
 - Python 3.10 o superior
-- Para ejecutar los tests: `pip install -r requirements.txt`
+- Para tests y métricas: `pip install -r requirements.txt`
 
 ## Uso
 
@@ -41,6 +41,24 @@ python -m pytest -v
 Los tests de caracterización ejecutan la aplicación real con entradas guionadas
 y comparan la salida contra archivos grabados sobre la versión base (`tests/golden/`).
 
+## Métricas de calidad
+
+Las métricas se generan con radon y pylint, en las versiones fijadas en
+`requirements.txt` (las mediciones del trabajo se hicieron con Python 3.13).
+El script siempre usa los mismos comandos y opciones, para que las mediciones de
+distintas versiones sean comparables:
+
+```bash
+# Medir la versión base (se extrae del tag, sin tocar la carpeta de trabajo)
+python herramientas/medir_calidad.py --ref estado-inicial --salida docs/evidencias/metricas-antes
+
+# Medir el código tal como está en la carpeta de trabajo
+python herramientas/medir_calidad.py --salida docs/evidencias/metricas-despues
+```
+
+Cada carpeta de resultados incluye `informacion.txt`, que indica la versión medida,
+los archivos analizados, las versiones de las herramientas y los comandos usados.
+
 ## Tecnologías
 
-Python 3 y pytest.
+Python 3, pytest, radon y pylint (métricas).
