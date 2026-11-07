@@ -1,0 +1,24 @@
+{
+  "contador": 2,
+  "estudiantes": [
+    {
+      "apellido": "Sosa",
+      "email": "carla@mail.com",
+      "legajo": "10003",
+      "nombre": "Carla"
+    }
+  ],
+  "solicitudes": [
+    {
+      "area": 2,
+      "descripcion": "Cambio a comision noche",
+      "email": "carla@mail.com",
+      "estado": "rech",
+      "estudiante": "Sosa, Carla",
+      "id": 1,
+      "legajo": "10003",
+      "prioridad": 2,
+      "tipo": 3
+    }
+  ]
+}

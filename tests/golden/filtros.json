@@ -1,0 +1,63 @@
+{
+  "contador": 5,
+  "estudiantes": [
+    {
+      "apellido": "Ramos",
+      "email": "diego.ramos@mail.com",
+      "legajo": "20001",
+      "nombre": "Diego"
+    },
+    {
+      "apellido": "Vega",
+      "email": "elena.vega@mail.com",
+      "legajo": "20002",
+      "nombre": "Elena"
+    }
+  ],
+  "solicitudes": [
+    {
+      "area": 0,
+      "descripcion": "Reclamo de nota final",
+      "email": "diego.ramos@mail.com",
+      "estado": "pend",
+      "estudiante": "Ramos, Diego",
+      "id": 1,
+      "legajo": "20001",
+      "prioridad": 3,
+      "tipo": 4
+    },
+    {
+      "area": 0,
+      "descripcion": "Certificado urgente para beca",
+      "email": "diego.ramos@mail.com",
+      "estado": "pend",
+      "estudiante": "Ramos, Diego",
+      "id": 2,
+      "legajo": "20001",
+      "prioridad": 2,
+      "tipo": 1
+    },
+    {
+      "area": 3,
+      "descripcion": "Cambio de comision por trabajo",
+      "email": "elena.vega@mail.com",
+      "estado": "proc",
+      "estudiante": "Vega, Elena",
+      "id": 3,
+      "legajo": "20002",
+      "prioridad": 2,
+      "tipo": 3
+    },
+    {
+      "area": 0,
+      "descripcion": "Certificado para obra social",
+      "email": "elena.vega@mail.com",
+      "estado": "pend",
+      "estudiante": "Vega, Elena",
+      "id": 4,
+      "legajo": "20002",
+      "prioridad": 1,
+      "tipo": 1
+    }
+  ]
+}

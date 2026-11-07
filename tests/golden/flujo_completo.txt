@@ -1,0 +1,194 @@
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: Legajo: Nombre: Apellido: Email: Estudiante registrado: Lopez, Ana
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: Legajo: Nombre: Apellido: Email: Estudiante registrado: Diaz, Bruno
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: Legajo del estudiante: Tipos de solicitud:
+1. Certificado de alumno regular
+2. Equivalencia
+3. Cambio de comision
+4. Reclamo de nota
+Tipo: Descripcion: Solicitud #1 registrada con prioridad Alta
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: Legajo del estudiante: Tipos de solicitud:
+1. Certificado de alumno regular
+2. Equivalencia
+3. Cambio de comision
+4. Reclamo de nota
+Tipo: Descripcion: Solicitud #2 registrada con prioridad Baja
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: Legajo del estudiante: Tipos de solicitud:
+1. Certificado de alumno regular
+2. Equivalencia
+3. Cambio de comision
+4. Reclamo de nota
+Tipo: Descripcion: Solicitud #3 registrada con prioridad Alta
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: ID de solicitud: Areas disponibles:
+1. Bedelia (Laura Gomez)
+2. Secretaria Academica (Martin Ruiz)
+3. Departamento de Alumnos (Sofia Herrera)
+Area: Solicitud #1 asignada a Bedelia (Laura Gomez)
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: ID de solicitud: Estado actual: Pendiente
+1. Pendiente
+2. En proceso
+3. Resuelta
+4. Rechazada
+Nuevo estado: Estado actualizado
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: ID de solicitud: Estado actual: En proceso
+1. Pendiente
+2. En proceso
+3. Resuelta
+4. Rechazada
+Nuevo estado: Estado actualizado
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: ID de solicitud: Areas disponibles:
+1. Bedelia (Laura Gomez)
+2. Secretaria Academica (Martin Ruiz)
+3. Departamento de Alumnos (Sofia Herrera)
+Area: Solicitud #2 asignada a Departamento de Alumnos (Sofia Herrera)
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: ID de solicitud: Estado actual: Pendiente
+1. Pendiente
+2. En proceso
+3. Resuelta
+4. Rechazada
+Nuevo estado: Estado actualizado
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: 1. Todas
+2. Por estado
+3. Por tipo
+4. Por prioridad
+Filtro: #1 | Reclamo de nota | Alta | Resuelta | Lopez, Ana (10001) | Area: Bedelia
+    Reclamo por nota del parcial de Algebra
+#2 | Certificado de alumno regular | Baja | Rechazada | Diaz, Bruno (10002) | Area: Departamento de Alumnos
+    Certificado para presentar en el trabajo
+#3 | Equivalencia | Alta | Pendiente | Diaz, Bruno (10002) | Area: Sin asignar
+    Equivalencia de Programacion I urgente
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: ===== REPORTE DE SOLICITUDES =====
+Total: 3
+Por estado:
+  Pendiente: 1
+  En proceso: 0
+  Resuelta: 1
+  Rechazada: 1
+Por tipo:
+  Certificado de alumno regular: 1
+  Equivalencia: 1
+  Cambio de comision: 0
+  Reclamo de nota: 1
+Por prioridad:
+  Alta: 2
+  Media: 0
+  Baja: 1
+Sin responsable asignado: 1
+Porcentaje resueltas: 33.3%
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: Hasta luego

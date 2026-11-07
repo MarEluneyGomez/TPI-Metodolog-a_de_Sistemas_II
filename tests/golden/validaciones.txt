@@ -1,0 +1,305 @@
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: Legajo: Nombre: Apellido: Email: Error: legajo invalido (debe tener 5 digitos)
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: Legajo: Nombre: Apellido: Email: Error: email invalido
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: Legajo: Nombre: Apellido: Email: Error: nombre y apellido son obligatorios
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: Legajo: Nombre: Apellido: Email: Estudiante registrado: Sosa, Carla
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: Legajo: Nombre: Apellido: Email: Error: ya existe un estudiante con ese legajo
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: Legajo del estudiante: Error: legajo invalido (debe tener 5 digitos)
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: Legajo del estudiante: Error: estudiante no encontrado
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: Legajo del estudiante: Tipos de solicitud:
+1. Certificado de alumno regular
+2. Equivalencia
+3. Cambio de comision
+4. Reclamo de nota
+Tipo: Error: tipo invalido
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: Legajo del estudiante: Tipos de solicitud:
+1. Certificado de alumno regular
+2. Equivalencia
+3. Cambio de comision
+4. Reclamo de nota
+Tipo: Descripcion: Error: la descripcion es obligatoria
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: Legajo del estudiante: Tipos de solicitud:
+1. Certificado de alumno regular
+2. Equivalencia
+3. Cambio de comision
+4. Reclamo de nota
+Tipo: Descripcion: Solicitud #1 registrada con prioridad Media
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: ID de solicitud: Error: id invalido
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: ID de solicitud: Error: solicitud no encontrada
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: ID de solicitud: Estado actual: Pendiente
+1. Pendiente
+2. En proceso
+3. Resuelta
+4. Rechazada
+Nuevo estado: Error: estado invalido
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: ID de solicitud: Estado actual: Pendiente
+1. Pendiente
+2. En proceso
+3. Resuelta
+4. Rechazada
+Nuevo estado: Error: debe asignar un responsable antes de pasar a En proceso
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: ID de solicitud: Estado actual: Pendiente
+1. Pendiente
+2. En proceso
+3. Resuelta
+4. Rechazada
+Nuevo estado: Error: una solicitud pendiente no puede resolverse sin pasar por En proceso
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: ID de solicitud: Areas disponibles:
+1. Bedelia (Laura Gomez)
+2. Secretaria Academica (Martin Ruiz)
+3. Departamento de Alumnos (Sofia Herrera)
+Area: Error: area invalida
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: ID de solicitud: Areas disponibles:
+1. Bedelia (Laura Gomez)
+2. Secretaria Academica (Martin Ruiz)
+3. Departamento de Alumnos (Sofia Herrera)
+Area: Solicitud #1 asignada a Secretaria Academica (Martin Ruiz)
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: ID de solicitud: Estado actual: Pendiente
+1. Pendiente
+2. En proceso
+3. Resuelta
+4. Rechazada
+Nuevo estado: Error: la solicitud ya se encuentra en ese estado
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: ID de solicitud: Estado actual: Pendiente
+1. Pendiente
+2. En proceso
+3. Resuelta
+4. Rechazada
+Nuevo estado: Estado actualizado
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: ID de solicitud: Error: no se puede asignar una solicitud cerrada
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: ID de solicitud: Error: la solicitud esta cerrada y no puede modificarse
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: ===== REPORTE DE SOLICITUDES =====
+Total: 1
+Por estado:
+  Pendiente: 0
+  En proceso: 0
+  Resuelta: 0
+  Rechazada: 1
+Por tipo:
+  Certificado de alumno regular: 0
+  Equivalencia: 0
+  Cambio de comision: 1
+  Reclamo de nota: 0
+Por prioridad:
+  Alta: 0
+  Media: 1
+  Baja: 0
+Sin responsable asignado: 0
+Porcentaje resueltas: 0.0%
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: Opcion invalida
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: Hasta luego

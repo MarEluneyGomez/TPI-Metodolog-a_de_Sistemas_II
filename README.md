@@ -13,6 +13,7 @@ filtrarlas y generar un reporte.
 ## Requisitos
 
 - Python 3.10 o superior
+- Para ejecutar los tests: `pip install -r requirements.txt`
 
 ## Uso
 
@@ -31,6 +32,15 @@ Los datos se guardan en `datos.json`, en la carpeta desde la que se ejecuta el p
 5. Listar / filtrar por estado, tipo o prioridad
 6. Reporte resumen
 
+## Tests
+
+```bash
+python -m pytest -v
+```
+
+Los tests de caracterización ejecutan la aplicación real con entradas guionadas
+y comparan la salida contra archivos grabados sobre la versión base (`tests/golden/`).
+
 ## Tecnologías
 
-Python 3.
+Python 3 y pytest.

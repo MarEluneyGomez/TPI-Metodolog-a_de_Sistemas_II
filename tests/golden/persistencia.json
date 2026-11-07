@@ -1,0 +1,35 @@
+{
+  "contador": 3,
+  "estudiantes": [
+    {
+      "apellido": "Medina",
+      "email": "franco.medina@mail.com",
+      "legajo": "30001",
+      "nombre": "Franco"
+    }
+  ],
+  "solicitudes": [
+    {
+      "area": 0,
+      "descripcion": "Equivalencia de Matematica",
+      "email": "franco.medina@mail.com",
+      "estado": "pend",
+      "estudiante": "Medina, Franco",
+      "id": 1,
+      "legajo": "30001",
+      "prioridad": 2,
+      "tipo": 2
+    },
+    {
+      "area": 0,
+      "descripcion": "Reclamo de nota de Fisica",
+      "email": "franco.medina@mail.com",
+      "estado": "pend",
+      "estudiante": "Medina, Franco",
+      "id": 2,
+      "legajo": "30001",
+      "prioridad": 3,
+      "tipo": 4
+    }
+  ]
+}

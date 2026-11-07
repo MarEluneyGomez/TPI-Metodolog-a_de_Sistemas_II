@@ -1,0 +1,325 @@
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: No hay solicitudes
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: No hay solicitudes para reportar
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: Legajo: Nombre: Apellido: Email: Estudiante registrado: Ramos, Diego
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: Legajo: Nombre: Apellido: Email: Estudiante registrado: Vega, Elena
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: Legajo del estudiante: Tipos de solicitud:
+1. Certificado de alumno regular
+2. Equivalencia
+3. Cambio de comision
+4. Reclamo de nota
+Tipo: Descripcion: Solicitud #1 registrada con prioridad Alta
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: Legajo del estudiante: Tipos de solicitud:
+1. Certificado de alumno regular
+2. Equivalencia
+3. Cambio de comision
+4. Reclamo de nota
+Tipo: Descripcion: Solicitud #2 registrada con prioridad Media
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: Legajo del estudiante: Tipos de solicitud:
+1. Certificado de alumno regular
+2. Equivalencia
+3. Cambio de comision
+4. Reclamo de nota
+Tipo: Descripcion: Solicitud #3 registrada con prioridad Media
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: Legajo del estudiante: Tipos de solicitud:
+1. Certificado de alumno regular
+2. Equivalencia
+3. Cambio de comision
+4. Reclamo de nota
+Tipo: Descripcion: Solicitud #4 registrada con prioridad Baja
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: ID de solicitud: Areas disponibles:
+1. Bedelia (Laura Gomez)
+2. Secretaria Academica (Martin Ruiz)
+3. Departamento de Alumnos (Sofia Herrera)
+Area: Solicitud #3 asignada a Departamento de Alumnos (Sofia Herrera)
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: ID de solicitud: Estado actual: Pendiente
+1. Pendiente
+2. En proceso
+3. Resuelta
+4. Rechazada
+Nuevo estado: Estado actualizado
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: 1. Todas
+2. Por estado
+3. Por tipo
+4. Por prioridad
+Filtro: 1. Pendiente  2. En proceso  3. Resuelta  4. Rechazada
+Estado: #1 | Reclamo de nota | Alta | Pendiente | Ramos, Diego (20001) | Area: Sin asignar
+    Reclamo de nota final
+#2 | Certificado de alumno regular | Media | Pendiente | Ramos, Diego (20001) | Area: Sin asignar
+    Certificado urgente para beca
+#4 | Certificado de alumno regular | Baja | Pendiente | Vega, Elena (20002) | Area: Sin asignar
+    Certificado para obra social
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: 1. Todas
+2. Por estado
+3. Por tipo
+4. Por prioridad
+Filtro: 1. Pendiente  2. En proceso  3. Resuelta  4. Rechazada
+Estado: #3 | Cambio de comision | Media | En proceso | Vega, Elena (20002) | Area: Departamento de Alumnos
+    Cambio de comision por trabajo
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: 1. Todas
+2. Por estado
+3. Por tipo
+4. Por prioridad
+Filtro: 1. Pendiente  2. En proceso  3. Resuelta  4. Rechazada
+Estado: No hay solicitudes que coincidan con el filtro
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: 1. Todas
+2. Por estado
+3. Por tipo
+4. Por prioridad
+Filtro: 1. Certificado de alumno regular  2. Equivalencia  3. Cambio de comision  4. Reclamo de nota
+Tipo: #2 | Certificado de alumno regular | Media | Pendiente | Ramos, Diego (20001) | Area: Sin asignar
+    Certificado urgente para beca
+#4 | Certificado de alumno regular | Baja | Pendiente | Vega, Elena (20002) | Area: Sin asignar
+    Certificado para obra social
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: 1. Todas
+2. Por estado
+3. Por tipo
+4. Por prioridad
+Filtro: 1. Certificado de alumno regular  2. Equivalencia  3. Cambio de comision  4. Reclamo de nota
+Tipo: Error: tipo invalido
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: 1. Todas
+2. Por estado
+3. Por tipo
+4. Por prioridad
+Filtro: Prioridad (1=Baja, 2=Media, 3=Alta): #1 | Reclamo de nota | Alta | Pendiente | Ramos, Diego (20001) | Area: Sin asignar
+    Reclamo de nota final
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: 1. Todas
+2. Por estado
+3. Por tipo
+4. Por prioridad
+Filtro: Prioridad (1=Baja, 2=Media, 3=Alta): #2 | Certificado de alumno regular | Media | Pendiente | Ramos, Diego (20001) | Area: Sin asignar
+    Certificado urgente para beca
+#3 | Cambio de comision | Media | En proceso | Vega, Elena (20002) | Area: Departamento de Alumnos
+    Cambio de comision por trabajo
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: 1. Todas
+2. Por estado
+3. Por tipo
+4. Por prioridad
+Filtro: Prioridad (1=Baja, 2=Media, 3=Alta): Error: prioridad invalida
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: 1. Todas
+2. Por estado
+3. Por tipo
+4. Por prioridad
+Filtro: 1. Pendiente  2. En proceso  3. Resuelta  4. Rechazada
+Estado: Error: estado invalido
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: 1. Todas
+2. Por estado
+3. Por tipo
+4. Por prioridad
+Filtro: Error: filtro invalido
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: ===== REPORTE DE SOLICITUDES =====
+Total: 4
+Por estado:
+  Pendiente: 3
+  En proceso: 1
+  Resuelta: 0
+  Rechazada: 0
+Por tipo:
+  Certificado de alumno regular: 2
+  Equivalencia: 0
+  Cambio de comision: 1
+  Reclamo de nota: 1
+Por prioridad:
+  Alta: 1
+  Media: 2
+  Baja: 1
+Sin responsable asignado: 3
+Porcentaje resueltas: 0.0%
+
+===== GESTION DE SOLICITUDES ACADEMICAS =====
+1. Registrar estudiante
+2. Registrar solicitud
+3. Cambiar estado de solicitud
+4. Asignar responsable
+5. Listar / filtrar solicitudes
+6. Reporte
+0. Salir
+Opcion: Hasta luego

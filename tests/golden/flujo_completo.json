@@ -1,0 +1,52 @@
+{
+  "contador": 4,
+  "estudiantes": [
+    {
+      "apellido": "Lopez",
+      "email": "ana.lopez@mail.com",
+      "legajo": "10001",
+      "nombre": "Ana"
+    },
+    {
+      "apellido": "Diaz",
+      "email": "bruno.diaz@mail.com",
+      "legajo": "10002",
+      "nombre": "Bruno"
+    }
+  ],
+  "solicitudes": [
+    {
+      "area": 1,
+      "descripcion": "Reclamo por nota del parcial de Algebra",
+      "email": "ana.lopez@mail.com",
+      "estado": "res",
+      "estudiante": "Lopez, Ana",
+      "id": 1,
+      "legajo": "10001",
+      "prioridad": 3,
+      "tipo": 4
+    },
+    {
+      "area": 3,
+      "descripcion": "Certificado para presentar en el trabajo",
+      "email": "bruno.diaz@mail.com",
+      "estado": "rech",
+      "estudiante": "Diaz, Bruno",
+      "id": 2,
+      "legajo": "10002",
+      "prioridad": 1,
+      "tipo": 1
+    },
+    {
+      "area": 0,
+      "descripcion": "Equivalencia de Programacion I urgente",
+      "email": "bruno.diaz@mail.com",
+      "estado": "pend",
+      "estudiante": "Diaz, Bruno",
+      "id": 3,
+      "legajo": "10002",
+      "prioridad": 3,
+      "tipo": 2
+    }
+  ]
+}
