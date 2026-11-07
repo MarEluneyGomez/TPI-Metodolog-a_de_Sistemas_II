@@ -3,8 +3,8 @@ import os
 from collections import Counter
 from datetime import datetime
 
-from dominio import (LARGO_LEGAJO, SIN_AREA, Area, EstadoSolicitud, Estudiante, Prioridad, Solicitud,
-                     TipoSolicitud)
+from dominio import (LARGO_LEGAJO, SIN_AREA, Area, DatosSolicitud, EstadoSolicitud, Estudiante, Prioridad,
+                     Solicitud, TipoSolicitud)
 
 # areas responsables (hardcodeadas por ahora)
 areas = [
@@ -90,17 +90,19 @@ class Sistema:
         if desc.strip() == "":
             print("Error: la descripcion es obligatoria")
             return
+        datos = DatosSolicitud(e, t, desc)
         p = self._calcular_prioridad(t, desc)
         fecha = datetime.now().strftime("%Y-%m-%d")
-        s = self.crear_solicitud(self.cont, e.legajo, e.nombre, e.apellido, e.email, t, desc, p,
-                                 EstadoSolicitud.PENDIENTE, SIN_AREA, fecha)
+        s = self.crear_solicitud(self.cont, datos, p, fecha)
         self.lista.append(s)
         self.cont = self.cont + 1
         self.guardar()
         print("Solicitud #" + str(s.numero) + " registrada con prioridad " + p.etiqueta)
 
-    def crear_solicitud(self, id, legajo, nombre, apellido, email, tipo, descripcion, prioridad, estado, area, fecha):
-        return Solicitud(id, legajo, apellido + ", " + nombre, email, tipo, descripcion, prioridad, estado, area, fecha)
+    def crear_solicitud(self, numero, datos, prioridad, fecha):
+        estudiante = datos.estudiante
+        return Solicitud(numero, estudiante.legajo, estudiante.nombre_completo, estudiante.email, datos.tipo,
+                         datos.descripcion, prioridad, EstadoSolicitud.PENDIENTE, SIN_AREA, fecha)
 
     def cambiar_estado(self):
         s = self._pedir_solicitud_abierta("Error: la solicitud esta cerrada y no puede modificarse")

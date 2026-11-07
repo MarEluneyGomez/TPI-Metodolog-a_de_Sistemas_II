@@ -65,6 +65,13 @@ class Estudiante:
         return cls(datos["legajo"], datos["nombre"], datos["apellido"], datos["email"])
 
 
+@dataclass(frozen=True)
+class DatosSolicitud:
+    estudiante: Estudiante
+    tipo: TipoSolicitud
+    descripcion: str
+
+
 @dataclass
 class Solicitud:
     numero: int
