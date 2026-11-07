@@ -2,12 +2,16 @@ import json
 import os
 from datetime import datetime
 
+from dominio import LARGO_LEGAJO, SIN_AREA, EstadoSolicitud, Prioridad, TipoSolicitud
+
 # areas responsables (hardcodeadas por ahora)
 areas = [
     {"id": 1, "nombre": "Bedelia", "responsable": "Laura Gomez"},
     {"id": 2, "nombre": "Secretaria Academica", "responsable": "Martin Ruiz"},
     {"id": 3, "nombre": "Departamento de Alumnos", "responsable": "Sofia Herrera"},
 ]
+
+ESTADOS_CERRADOS = (EstadoSolicitud.RESUELTA, EstadoSolicitud.RECHAZADA)
 
 
 class Sistema:
@@ -69,26 +73,24 @@ class Sistema:
             print("Error: estudiante no encontrado")
             return
         print("Tipos de solicitud:")
-        print("1. Certificado de alumno regular")
-        print("2. Equivalencia")
-        print("3. Cambio de comision")
-        print("4. Reclamo de nota")
-        t = input("Tipo: ")
-        if not self._tipo_valido(t):
+        for tipo in TipoSolicitud:
+            print(str(tipo.codigo) + ". " + tipo.etiqueta)
+        t = self._tipo_desde_texto(input("Tipo: "))
+        if t is None:
             print("Error: tipo invalido")
             return
-        t = int(t)
         desc = input("Descripcion: ")
         if desc.strip() == "":
             print("Error: la descripcion es obligatoria")
             return
         p = self._calcular_prioridad(t, desc)
         fecha = datetime.now().strftime("%Y-%m-%d")
-        s = self.crear_solicitud(self.cont, e["legajo"], e["nombre"], e["apellido"], e["email"], t, desc, p, "pend", 0, fecha)
+        s = self.crear_solicitud(self.cont, e["legajo"], e["nombre"], e["apellido"], e["email"], t.codigo, desc, p.codigo,
+                                 EstadoSolicitud.PENDIENTE.codigo, SIN_AREA, fecha)
         self.lista.append(s)
         self.cont = self.cont + 1
         self.guardar()
-        print("Solicitud #" + str(s["id"]) + " registrada con prioridad " + self._nombre_prioridad(p))
+        print("Solicitud #" + str(s["id"]) + " registrada con prioridad " + p.etiqueta)
 
     def crear_solicitud(self, id, legajo, nombre, apellido, email, tipo, descripcion, prioridad, estado, area, fecha):
         s = {}
@@ -108,25 +110,24 @@ class Sistema:
         s = self._pedir_solicitud_abierta("Error: la solicitud esta cerrada y no puede modificarse")
         if s is None:
             return
-        print("Estado actual: " + self._nombre_estado(s["estado"]))
-        print("1. Pendiente")
-        print("2. En proceso")
-        print("3. Resuelta")
-        print("4. Rechazada")
-        n = self._codigo_estado(input("Nuevo estado: "))
-        if n is None:
+        actual = EstadoSolicitud.desde_codigo(s["estado"])
+        print("Estado actual: " + actual.etiqueta)
+        for numero, estado in enumerate(EstadoSolicitud, start=1):
+            print(str(numero) + ". " + estado.etiqueta)
+        nuevo = self._estado_desde_opcion(input("Nuevo estado: "))
+        if nuevo is None:
             print("Error: estado invalido")
             return
-        if n == s["estado"]:
+        if nuevo is actual:
             print("Error: la solicitud ya se encuentra en ese estado")
             return
-        if s["estado"] == "pend" and n == "res":
+        if actual is EstadoSolicitud.PENDIENTE and nuevo is EstadoSolicitud.RESUELTA:
             print("Error: una solicitud pendiente no puede resolverse sin pasar por En proceso")
             return
-        if n == "proc" and s["area"] == 0:
+        if nuevo is EstadoSolicitud.EN_PROCESO and s["area"] == SIN_AREA:
             print("Error: debe asignar un responsable antes de pasar a En proceso")
             return
-        s["estado"] = n
+        s["estado"] = nuevo.codigo
         self.guardar()
         print("Estado actualizado")
 
@@ -170,26 +171,43 @@ class Sistema:
         print("===== REPORTE DE SOLICITUDES =====")
         print("Total: " + str(total))
         print("Por estado:")
-        for codigo in ["pend", "proc", "res", "rech"]:
-            print("  " + self._nombre_estado(codigo) + ": " + str(self._contar("estado", codigo)))
+        for estado in EstadoSolicitud:
+            print("  " + estado.etiqueta + ": " + str(self._contar("estado", estado.codigo)))
         print("Por tipo:")
-        for tipo in [1, 2, 3, 4]:
-            print("  " + self._nombre_tipo(tipo) + ": " + str(self._contar("tipo", tipo)))
+        for tipo in TipoSolicitud:
+            print("  " + tipo.etiqueta + ": " + str(self._contar("tipo", tipo.codigo)))
         print("Por prioridad:")
-        for prioridad in [3, 2, 1]:
-            print("  " + self._nombre_prioridad(prioridad) + ": " + str(self._contar("prioridad", prioridad)))
-        print("Sin responsable asignado: " + str(self._contar("area", 0)))
-        resueltas = self._contar("estado", "res")
+        for prioridad in reversed(Prioridad):
+            print("  " + prioridad.etiqueta + ": " + str(self._contar("prioridad", prioridad.codigo)))
+        print("Sin responsable asignado: " + str(self._contar("area", SIN_AREA)))
+        resueltas = self._contar("estado", EstadoSolicitud.RESUELTA.codigo)
         print("Porcentaje resueltas: " + str(round(resueltas * 100 / total, 1)) + "%")
 
     def _legajo_valido(self, legajo):
-        return legajo.isdigit() and len(legajo) == 5
+        return legajo.isdigit() and len(legajo) == LARGO_LEGAJO
 
     def _email_valido(self, email):
         return "@" in email and "." in email.split("@")[-1]
 
-    def _tipo_valido(self, texto):
-        return texto.isdigit() and 1 <= int(texto) <= 4
+    def _tipo_desde_texto(self, texto):
+        if not texto.isdigit():
+            return None
+        for tipo in TipoSolicitud:
+            if tipo.codigo == int(texto):
+                return tipo
+        return None
+
+    def _estado_desde_opcion(self, opcion):
+        for numero, estado in enumerate(EstadoSolicitud, start=1):
+            if opcion == str(numero):
+                return estado
+        return None
+
+    def _prioridad_desde_texto(self, texto):
+        for prioridad in Prioridad:
+            if texto == str(prioridad.codigo):
+                return prioridad
+        return None
 
     def _buscar_estudiante(self, legajo):
         for e in self.est:
@@ -210,7 +228,7 @@ class Sistema:
         return None
 
     def _esta_cerrada(self, s):
-        return s["estado"] == "res" or s["estado"] == "rech"
+        return EstadoSolicitud.desde_codigo(s["estado"]) in ESTADOS_CERRADOS
 
     def _pedir_solicitud_abierta(self, mensaje_si_esta_cerrada):
         i = input("ID de solicitud: ")
@@ -227,50 +245,40 @@ class Sistema:
         return s
 
     def _calcular_prioridad(self, tipo, descripcion):
-        if tipo == 4:
-            p = 3
-        elif tipo == 2 or tipo == 3:
-            p = 2
+        if tipo is TipoSolicitud.RECLAMO_DE_NOTA:
+            p = Prioridad.ALTA
+        elif tipo in (TipoSolicitud.EQUIVALENCIA, TipoSolicitud.CAMBIO_DE_COMISION):
+            p = Prioridad.MEDIA
         else:
-            p = 1
-        if "urgente" in descripcion.lower() and p < 3:
-            p = p + 1
+            p = Prioridad.BAJA
+        if "urgente" in descripcion.lower() and p is not Prioridad.ALTA:
+            p = Prioridad.desde_codigo(p.codigo + 1)
         return p
-
-    def _codigo_estado(self, opcion):
-        if opcion == "1":
-            return "pend"
-        if opcion == "2":
-            return "proc"
-        if opcion == "3":
-            return "res"
-        if opcion == "4":
-            return "rech"
-        return None
 
     def _pedir_filtro(self, f):
         if f == "1":
             return list(self.lista)
         if f == "2":
-            print("1. Pendiente  2. En proceso  3. Resuelta  4. Rechazada")
-            e = self._codigo_estado(input("Estado: "))
+            print("  ".join(str(n) + ". " + e.etiqueta for n, e in enumerate(EstadoSolicitud, start=1)))
+            e = self._estado_desde_opcion(input("Estado: "))
             if e is None:
                 print("Error: estado invalido")
                 return None
-            return self._filtrar("estado", e)
+            return self._filtrar("estado", e.codigo)
         if f == "3":
-            print("1. Certificado de alumno regular  2. Equivalencia  3. Cambio de comision  4. Reclamo de nota")
-            t = input("Tipo: ")
-            if not self._tipo_valido(t):
+            print("  ".join(str(t.codigo) + ". " + t.etiqueta for t in TipoSolicitud))
+            t = self._tipo_desde_texto(input("Tipo: "))
+            if t is None:
                 print("Error: tipo invalido")
                 return None
-            return self._filtrar("tipo", int(t))
+            return self._filtrar("tipo", t.codigo)
         if f == "4":
-            p = input("Prioridad (1=Baja, 2=Media, 3=Alta): ")
-            if p not in ["1", "2", "3"]:
+            opciones = ", ".join(str(p.codigo) + "=" + p.etiqueta for p in Prioridad)
+            p = self._prioridad_desde_texto(input("Prioridad (" + opciones + "): "))
+            if p is None:
                 print("Error: prioridad invalida")
                 return None
-            return self._filtrar("prioridad", int(p))
+            return self._filtrar("prioridad", p.codigo)
         print("Error: filtro invalido")
         return None
 
@@ -281,35 +289,12 @@ class Sistema:
         return len(self._filtrar(clave, valor))
 
     def _imprimir_solicitud(self, s):
-        print("#" + str(s["id"]) + " | " + self._nombre_tipo(s["tipo"]) + " | " + self._nombre_prioridad(s["prioridad"])
-              + " | " + self._nombre_estado(s["estado"]) + " | " + s["estudiante"] + " (" + s["legajo"] + ") | Area: "
-              + self._nombre_area(s["area"]))
+        tipo = TipoSolicitud.desde_codigo(s["tipo"])
+        prioridad = Prioridad.desde_codigo(s["prioridad"])
+        estado = EstadoSolicitud.desde_codigo(s["estado"])
+        print("#" + str(s["id"]) + " | " + tipo.etiqueta + " | " + prioridad.etiqueta + " | " + estado.etiqueta
+              + " | " + s["estudiante"] + " (" + s["legajo"] + ") | Area: " + self._nombre_area(s["area"]))
         print("    " + s["descripcion"])
-
-    def _nombre_tipo(self, tipo):
-        if tipo == 1:
-            return "Certificado de alumno regular"
-        if tipo == 2:
-            return "Equivalencia"
-        if tipo == 3:
-            return "Cambio de comision"
-        return "Reclamo de nota"
-
-    def _nombre_prioridad(self, prioridad):
-        if prioridad == 3:
-            return "Alta"
-        if prioridad == 2:
-            return "Media"
-        return "Baja"
-
-    def _nombre_estado(self, estado):
-        if estado == "pend":
-            return "Pendiente"
-        if estado == "proc":
-            return "En proceso"
-        if estado == "res":
-            return "Resuelta"
-        return "Rechazada"
 
     def _nombre_area(self, id_area):
         for a in areas:
