@@ -43,33 +43,29 @@ class Sistema:
         nombre = input("Nombre: ")
         apellido = input("Apellido: ")
         email = input("Email: ")
-        if legajo == "" or not legajo.isdigit() or len(legajo) != 5:
+        if not self._legajo_valido(legajo):
             print("Error: legajo invalido (debe tener 5 digitos)")
             return
         if nombre == "" or apellido == "":
             print("Error: nombre y apellido son obligatorios")
             return
-        if "@" not in email or "." not in email.split("@")[-1]:
+        if not self._email_valido(email):
             print("Error: email invalido")
             return
-        for e in self.est:
-            if e["legajo"] == legajo:
-                print("Error: ya existe un estudiante con ese legajo")
-                return
+        if self._buscar_estudiante(legajo) is not None:
+            print("Error: ya existe un estudiante con ese legajo")
+            return
         self.est.append({"legajo": legajo, "nombre": nombre, "apellido": apellido, "email": email})
         self.guardar()
         print("Estudiante registrado: " + apellido + ", " + nombre)
 
     def registrar_solicitud(self):
         legajo = input("Legajo del estudiante: ")
-        if legajo == "" or not legajo.isdigit() or len(legajo) != 5:
+        if not self._legajo_valido(legajo):
             print("Error: legajo invalido (debe tener 5 digitos)")
             return
-        e = None
-        for x in self.est:
-            if x["legajo"] == legajo:
-                e = x
-        if e == None:
+        e = self._buscar_estudiante(legajo)
+        if e is None:
             print("Error: estudiante no encontrado")
             return
         print("Tipos de solicitud:")
@@ -78,7 +74,7 @@ class Sistema:
         print("3. Cambio de comision")
         print("4. Reclamo de nota")
         t = input("Tipo: ")
-        if not t.isdigit() or int(t) < 1 or int(t) > 4:
+        if not self._tipo_valido(t):
             print("Error: tipo invalido")
             return
         t = int(t)
@@ -86,30 +82,13 @@ class Sistema:
         if desc.strip() == "":
             print("Error: la descripcion es obligatoria")
             return
-        p = 1
-        if t == 4:
-            p = 3
-        elif t == 2:
-            p = 2
-        elif t == 3:
-            p = 2
-        elif t == 1:
-            p = 1
-        if "urgente" in desc.lower():
-            if p < 3:
-                p = p + 1
+        p = self._calcular_prioridad(t, desc)
         fecha = datetime.now().strftime("%Y-%m-%d")
         s = self.crear_solicitud(self.cont, e["legajo"], e["nombre"], e["apellido"], e["email"], t, desc, p, "pend", 0, fecha)
         self.lista.append(s)
         self.cont = self.cont + 1
         self.guardar()
-        if p == 3:
-            pr = "Alta"
-        elif p == 2:
-            pr = "Media"
-        else:
-            pr = "Baja"
-        print("Solicitud #" + str(s["id"]) + " registrada con prioridad " + pr)
+        print("Solicitud #" + str(s["id"]) + " registrada con prioridad " + self._nombre_prioridad(p))
 
     def crear_solicitud(self, id, legajo, nombre, apellido, email, tipo, descripcion, prioridad, estado, area, fecha):
         s = {}
@@ -126,38 +105,16 @@ class Sistema:
         return s
 
     def cambiar_estado(self):
-        i = input("ID de solicitud: ")
-        if not i.isdigit():
-            print("Error: id invalido")
+        s = self._pedir_solicitud_abierta("Error: la solicitud esta cerrada y no puede modificarse")
+        if s is None:
             return
-        s = None
-        for x in self.lista:
-            if x["id"] == int(i):
-                s = x
-        if s == None:
-            print("Error: solicitud no encontrada")
-            return
-        if s["estado"] == "res" or s["estado"] == "rech":
-            print("Error: la solicitud esta cerrada y no puede modificarse")
-            return
-        if s["estado"] == "pend":
-            print("Estado actual: Pendiente")
-        elif s["estado"] == "proc":
-            print("Estado actual: En proceso")
+        print("Estado actual: " + self._nombre_estado(s["estado"]))
         print("1. Pendiente")
         print("2. En proceso")
         print("3. Resuelta")
         print("4. Rechazada")
-        n = input("Nuevo estado: ")
-        if n == "1":
-            n = "pend"
-        elif n == "2":
-            n = "proc"
-        elif n == "3":
-            n = "res"
-        elif n == "4":
-            n = "rech"
-        else:
+        n = self._codigo_estado(input("Nuevo estado: "))
+        if n is None:
             print("Error: estado invalido")
             return
         if n == s["estado"]:
@@ -174,36 +131,19 @@ class Sistema:
         print("Estado actualizado")
 
     def asignar_responsable(self):
-        i = input("ID de solicitud: ")
-        if not i.isdigit():
-            print("Error: id invalido")
-            return
-        s = None
-        for x in self.lista:
-            if x["id"] == int(i):
-                s = x
-        if s == None:
-            print("Error: solicitud no encontrada")
-            return
-        if s["estado"] == "res" or s["estado"] == "rech":
-            print("Error: no se puede asignar una solicitud cerrada")
+        s = self._pedir_solicitud_abierta("Error: no se puede asignar una solicitud cerrada")
+        if s is None:
             return
         print("Areas disponibles:")
         for a in areas:
             print(str(a["id"]) + ". " + a["nombre"] + " (" + a["responsable"] + ")")
-        a = input("Area: ")
-        ok = False
-        for ar in areas:
-            if a.isdigit() and ar["id"] == int(a):
-                ok = True
-                s["area"] = ar["id"]
-                nom = ar["nombre"]
-                resp = ar["responsable"]
-        if not ok:
+        area = self._buscar_area(input("Area: "))
+        if area is None:
             print("Error: area invalida")
             return
+        s["area"] = area["id"]
         self.guardar()
-        print("Solicitud #" + str(s["id"]) + " asignada a " + nom + " (" + resp + ")")
+        print("Solicitud #" + str(s["id"]) + " asignada a " + area["nombre"] + " (" + area["responsable"] + ")")
 
     def listar(self):
         if len(self.lista) == 0:
@@ -213,104 +153,166 @@ class Sistema:
         print("2. Por estado")
         print("3. Por tipo")
         print("4. Por prioridad")
-        f = input("Filtro: ")
-        res = []
-        if f == "1":
-            for s in self.lista:
-                res.append(s)
-        elif f == "2":
-            print("1. Pendiente  2. En proceso  3. Resuelta  4. Rechazada")
-            e = input("Estado: ")
-            if e == "1": e = "pend"
-            elif e == "2": e = "proc"
-            elif e == "3": e = "res"
-            elif e == "4": e = "rech"
-            else:
-                print("Error: estado invalido")
-                return
-            for s in self.lista:
-                if s["estado"] == e:
-                    res.append(s)
-        elif f == "3":
-            print("1. Certificado de alumno regular  2. Equivalencia  3. Cambio de comision  4. Reclamo de nota")
-            t = input("Tipo: ")
-            if not t.isdigit() or int(t) < 1 or int(t) > 4:
-                print("Error: tipo invalido")
-                return
-            for s in self.lista:
-                if s["tipo"] == int(t):
-                    res.append(s)
-        elif f == "4":
-            p = input("Prioridad (1=Baja, 2=Media, 3=Alta): ")
-            if p not in ["1", "2", "3"]:
-                print("Error: prioridad invalida")
-                return
-            for s in self.lista:
-                if s["prioridad"] == int(p):
-                    res.append(s)
-        else:
-            print("Error: filtro invalido")
+        res = self._pedir_filtro(input("Filtro: "))
+        if res is None:
             return
         if len(res) == 0:
             print("No hay solicitudes que coincidan con el filtro")
             return
         for s in res:
-            if s["tipo"] == 1: tn = "Certificado de alumno regular"
-            elif s["tipo"] == 2: tn = "Equivalencia"
-            elif s["tipo"] == 3: tn = "Cambio de comision"
-            else: tn = "Reclamo de nota"
-            if s["prioridad"] == 3: pn = "Alta"
-            elif s["prioridad"] == 2: pn = "Media"
-            else: pn = "Baja"
-            if s["estado"] == "pend": en = "Pendiente"
-            elif s["estado"] == "proc": en = "En proceso"
-            elif s["estado"] == "res": en = "Resuelta"
-            else: en = "Rechazada"
-            an = "Sin asignar"
-            for a in areas:
-                if a["id"] == s["area"]:
-                    an = a["nombre"]
-            print("#" + str(s["id"]) + " | " + tn + " | " + pn + " | " + en + " | " + s["estudiante"] + " (" + s["legajo"] + ") | Area: " + an)
-            print("    " + s["descripcion"])
+            self._imprimir_solicitud(s)
 
     def reporte(self):
         if len(self.lista) == 0:
             print("No hay solicitudes para reportar")
             return
         total = len(self.lista)
-        pend = 0; proc = 0; res = 0; rech = 0
-        t1 = 0; t2 = 0; t3 = 0; t4 = 0
-        alta = 0; media = 0; baja = 0
-        sin = 0
-        for s in self.lista:
-            if s["estado"] == "pend": pend += 1
-            elif s["estado"] == "proc": proc += 1
-            elif s["estado"] == "res": res += 1
-            elif s["estado"] == "rech": rech += 1
-            if s["tipo"] == 1: t1 += 1
-            elif s["tipo"] == 2: t2 += 1
-            elif s["tipo"] == 3: t3 += 1
-            elif s["tipo"] == 4: t4 += 1
-            if s["prioridad"] == 3: alta += 1
-            elif s["prioridad"] == 2: media += 1
-            else: baja += 1
-            if s["area"] == 0:
-                sin += 1
         print("===== REPORTE DE SOLICITUDES =====")
         print("Total: " + str(total))
         print("Por estado:")
-        print("  Pendiente: " + str(pend))
-        print("  En proceso: " + str(proc))
-        print("  Resuelta: " + str(res))
-        print("  Rechazada: " + str(rech))
+        for codigo in ["pend", "proc", "res", "rech"]:
+            print("  " + self._nombre_estado(codigo) + ": " + str(self._contar("estado", codigo)))
         print("Por tipo:")
-        print("  Certificado de alumno regular: " + str(t1))
-        print("  Equivalencia: " + str(t2))
-        print("  Cambio de comision: " + str(t3))
-        print("  Reclamo de nota: " + str(t4))
+        for tipo in [1, 2, 3, 4]:
+            print("  " + self._nombre_tipo(tipo) + ": " + str(self._contar("tipo", tipo)))
         print("Por prioridad:")
-        print("  Alta: " + str(alta))
-        print("  Media: " + str(media))
-        print("  Baja: " + str(baja))
-        print("Sin responsable asignado: " + str(sin))
-        print("Porcentaje resueltas: " + str(round(res * 100 / total, 1)) + "%")
+        for prioridad in [3, 2, 1]:
+            print("  " + self._nombre_prioridad(prioridad) + ": " + str(self._contar("prioridad", prioridad)))
+        print("Sin responsable asignado: " + str(self._contar("area", 0)))
+        resueltas = self._contar("estado", "res")
+        print("Porcentaje resueltas: " + str(round(resueltas * 100 / total, 1)) + "%")
+
+    def _legajo_valido(self, legajo):
+        return legajo.isdigit() and len(legajo) == 5
+
+    def _email_valido(self, email):
+        return "@" in email and "." in email.split("@")[-1]
+
+    def _tipo_valido(self, texto):
+        return texto.isdigit() and 1 <= int(texto) <= 4
+
+    def _buscar_estudiante(self, legajo):
+        for e in self.est:
+            if e["legajo"] == legajo:
+                return e
+        return None
+
+    def _buscar_solicitud(self, numero):
+        for s in self.lista:
+            if s["id"] == numero:
+                return s
+        return None
+
+    def _buscar_area(self, texto):
+        for a in areas:
+            if texto.isdigit() and a["id"] == int(texto):
+                return a
+        return None
+
+    def _esta_cerrada(self, s):
+        return s["estado"] == "res" or s["estado"] == "rech"
+
+    def _pedir_solicitud_abierta(self, mensaje_si_esta_cerrada):
+        i = input("ID de solicitud: ")
+        if not i.isdigit():
+            print("Error: id invalido")
+            return None
+        s = self._buscar_solicitud(int(i))
+        if s is None:
+            print("Error: solicitud no encontrada")
+            return None
+        if self._esta_cerrada(s):
+            print(mensaje_si_esta_cerrada)
+            return None
+        return s
+
+    def _calcular_prioridad(self, tipo, descripcion):
+        if tipo == 4:
+            p = 3
+        elif tipo == 2 or tipo == 3:
+            p = 2
+        else:
+            p = 1
+        if "urgente" in descripcion.lower() and p < 3:
+            p = p + 1
+        return p
+
+    def _codigo_estado(self, opcion):
+        if opcion == "1":
+            return "pend"
+        if opcion == "2":
+            return "proc"
+        if opcion == "3":
+            return "res"
+        if opcion == "4":
+            return "rech"
+        return None
+
+    def _pedir_filtro(self, f):
+        if f == "1":
+            return list(self.lista)
+        if f == "2":
+            print("1. Pendiente  2. En proceso  3. Resuelta  4. Rechazada")
+            e = self._codigo_estado(input("Estado: "))
+            if e is None:
+                print("Error: estado invalido")
+                return None
+            return self._filtrar("estado", e)
+        if f == "3":
+            print("1. Certificado de alumno regular  2. Equivalencia  3. Cambio de comision  4. Reclamo de nota")
+            t = input("Tipo: ")
+            if not self._tipo_valido(t):
+                print("Error: tipo invalido")
+                return None
+            return self._filtrar("tipo", int(t))
+        if f == "4":
+            p = input("Prioridad (1=Baja, 2=Media, 3=Alta): ")
+            if p not in ["1", "2", "3"]:
+                print("Error: prioridad invalida")
+                return None
+            return self._filtrar("prioridad", int(p))
+        print("Error: filtro invalido")
+        return None
+
+    def _filtrar(self, clave, valor):
+        return [s for s in self.lista if s[clave] == valor]
+
+    def _contar(self, clave, valor):
+        return len(self._filtrar(clave, valor))
+
+    def _imprimir_solicitud(self, s):
+        print("#" + str(s["id"]) + " | " + self._nombre_tipo(s["tipo"]) + " | " + self._nombre_prioridad(s["prioridad"])
+              + " | " + self._nombre_estado(s["estado"]) + " | " + s["estudiante"] + " (" + s["legajo"] + ") | Area: "
+              + self._nombre_area(s["area"]))
+        print("    " + s["descripcion"])
+
+    def _nombre_tipo(self, tipo):
+        if tipo == 1:
+            return "Certificado de alumno regular"
+        if tipo == 2:
+            return "Equivalencia"
+        if tipo == 3:
+            return "Cambio de comision"
+        return "Reclamo de nota"
+
+    def _nombre_prioridad(self, prioridad):
+        if prioridad == 3:
+            return "Alta"
+        if prioridad == 2:
+            return "Media"
+        return "Baja"
+
+    def _nombre_estado(self, estado):
+        if estado == "pend":
+            return "Pendiente"
+        if estado == "proc":
+            return "En proceso"
+        if estado == "res":
+            return "Resuelta"
+        return "Rechazada"
+
+    def _nombre_area(self, id_area):
+        for a in areas:
+            if a["id"] == id_area:
+                return a["nombre"]
+        return "Sin asignar"
