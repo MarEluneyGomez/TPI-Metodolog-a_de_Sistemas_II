@@ -314,9 +314,3 @@ class Sistema:
         print("  Baja: " + str(baja))
         print("Sin responsable asignado: " + str(sin))
         print("Porcentaje resueltas: " + str(round(res * 100 / total, 1)) + "%")
-
-    # version vieja, no borrar por las dudas
-    def procesar2(self, s):
-        if s["estado"] == "pend":
-            s["estado"] = "proc"
-        return s
