@@ -3,8 +3,8 @@ import os
 from collections import Counter
 from datetime import datetime
 
-from dominio import (LARGO_LEGAJO, SIN_AREA, Area, DatosSolicitud, EstadoSolicitud, Estudiante, Prioridad,
-                     Solicitud, TipoSolicitud)
+from dominio import (LARGO_LEGAJO, SIN_AREA, Area, DatosSolicitud, ErrorDeNegocio, EstadoSolicitud, Estudiante,
+                     Prioridad, Solicitud, TipoSolicitud)
 
 # areas responsables (hardcodeadas por ahora)
 areas = [
@@ -12,8 +12,6 @@ areas = [
     Area(2, "Secretaria Academica", "Martin Ruiz"),
     Area(3, "Departamento de Alumnos", "Sofia Herrera"),
 ]
-
-ESTADOS_CERRADOS = (EstadoSolicitud.RESUELTA, EstadoSolicitud.RECHAZADA)
 
 
 class Sistema:
@@ -91,18 +89,12 @@ class Sistema:
             print("Error: la descripcion es obligatoria")
             return
         datos = DatosSolicitud(e, t, desc)
-        p = self._calcular_prioridad(t, desc)
         fecha = datetime.now().strftime("%Y-%m-%d")
-        s = self.crear_solicitud(self.cont, datos, p, fecha)
+        s = Solicitud.crear(self.cont, datos, fecha)
         self.lista.append(s)
         self.cont = self.cont + 1
         self.guardar()
-        print("Solicitud #" + str(s.numero) + " registrada con prioridad " + p.etiqueta)
-
-    def crear_solicitud(self, numero, datos, prioridad, fecha):
-        estudiante = datos.estudiante
-        return Solicitud(numero, estudiante.legajo, estudiante.nombre_completo, estudiante.email, datos.tipo,
-                         datos.descripcion, prioridad, EstadoSolicitud.PENDIENTE, SIN_AREA, fecha)
+        print("Solicitud #" + str(s.numero) + " registrada con prioridad " + s.prioridad.etiqueta)
 
     def cambiar_estado(self):
         s = self._pedir_solicitud_abierta("Error: la solicitud esta cerrada y no puede modificarse")
@@ -115,16 +107,11 @@ class Sistema:
         if nuevo is None:
             print("Error: estado invalido")
             return
-        if nuevo is s.estado:
-            print("Error: la solicitud ya se encuentra en ese estado")
+        try:
+            s.cambiar_estado(nuevo)
+        except ErrorDeNegocio as error:
+            print("Error: " + str(error))
             return
-        if s.estado is EstadoSolicitud.PENDIENTE and nuevo is EstadoSolicitud.RESUELTA:
-            print("Error: una solicitud pendiente no puede resolverse sin pasar por En proceso")
-            return
-        if nuevo is EstadoSolicitud.EN_PROCESO and s.area == SIN_AREA:
-            print("Error: debe asignar un responsable antes de pasar a En proceso")
-            return
-        s.estado = nuevo
         self.guardar()
         print("Estado actualizado")
 
@@ -139,7 +126,7 @@ class Sistema:
         if area is None:
             print("Error: area invalida")
             return
-        s.area = area.numero
+        s.asignar_area(area)
         self.guardar()
         print("Solicitud #" + str(s.numero) + " asignada a " + area.nombre + " (" + area.responsable + ")")
 
@@ -228,9 +215,6 @@ class Sistema:
                 return a
         return None
 
-    def _esta_cerrada(self, s):
-        return s.estado in ESTADOS_CERRADOS
-
     def _pedir_solicitud_abierta(self, mensaje_si_esta_cerrada):
         i = input("ID de solicitud: ")
         if not i.isdigit():
@@ -240,21 +224,10 @@ class Sistema:
         if s is None:
             print("Error: solicitud no encontrada")
             return None
-        if self._esta_cerrada(s):
+        if s.esta_cerrada:
             print(mensaje_si_esta_cerrada)
             return None
         return s
-
-    def _calcular_prioridad(self, tipo, descripcion):
-        if tipo is TipoSolicitud.RECLAMO_DE_NOTA:
-            p = Prioridad.ALTA
-        elif tipo in (TipoSolicitud.EQUIVALENCIA, TipoSolicitud.CAMBIO_DE_COMISION):
-            p = Prioridad.MEDIA
-        else:
-            p = Prioridad.BAJA
-        if "urgente" in descripcion.lower() and p is not Prioridad.ALTA:
-            p = Prioridad.desde_codigo(p.codigo + 1)
-        return p
 
     def _pedir_filtro(self, f):
         if f == "1":

@@ -3,6 +3,11 @@ from enum import Enum
 
 LARGO_LEGAJO = 5
 SIN_AREA = 0
+PALABRA_URGENTE = "urgente"
+
+
+class ErrorDeNegocio(Exception):
+    pass
 
 
 class EnumConCodigo(Enum):
@@ -25,18 +30,31 @@ class EstadoSolicitud(EnumConCodigo):
     RESUELTA = ("res", "Resuelta")
     RECHAZADA = ("rech", "Rechazada")
 
-
-class TipoSolicitud(EnumConCodigo):
-    CERTIFICADO_ALUMNO_REGULAR = (1, "Certificado de alumno regular")
-    EQUIVALENCIA = (2, "Equivalencia")
-    CAMBIO_DE_COMISION = (3, "Cambio de comision")
-    RECLAMO_DE_NOTA = (4, "Reclamo de nota")
+    @property
+    def es_final(self):
+        return self in (EstadoSolicitud.RESUELTA, EstadoSolicitud.RECHAZADA)
 
 
 class Prioridad(EnumConCodigo):
     BAJA = (1, "Baja")
     MEDIA = (2, "Media")
     ALTA = (3, "Alta")
+
+    def subir(self):
+        prioridades = list(Prioridad)
+        posicion = prioridades.index(self)
+        return prioridades[min(posicion + 1, len(prioridades) - 1)]
+
+
+class TipoSolicitud(EnumConCodigo):
+    CERTIFICADO_ALUMNO_REGULAR = (1, "Certificado de alumno regular", Prioridad.BAJA)
+    EQUIVALENCIA = (2, "Equivalencia", Prioridad.MEDIA)
+    CAMBIO_DE_COMISION = (3, "Cambio de comision", Prioridad.MEDIA)
+    RECLAMO_DE_NOTA = (4, "Reclamo de nota", Prioridad.ALTA)
+
+    def __init__(self, codigo, etiqueta, prioridad_base):
+        super().__init__(codigo, etiqueta)
+        self.prioridad_base = prioridad_base
 
 
 @dataclass(frozen=True)
@@ -71,6 +89,12 @@ class DatosSolicitud:
     tipo: TipoSolicitud
     descripcion: str
 
+    def calcular_prioridad(self):
+        prioridad = self.tipo.prioridad_base
+        if PALABRA_URGENTE in self.descripcion.lower():
+            prioridad = prioridad.subir()
+        return prioridad
+
 
 @dataclass
 class Solicitud:
@@ -84,6 +108,36 @@ class Solicitud:
     estado: EstadoSolicitud
     area: int
     fecha: str
+
+    @classmethod
+    def crear(cls, numero, datos, fecha):
+        estudiante = datos.estudiante
+        return cls(numero, estudiante.legajo, estudiante.nombre_completo, estudiante.email, datos.tipo,
+                   datos.descripcion, datos.calcular_prioridad(), EstadoSolicitud.PENDIENTE, SIN_AREA, fecha)
+
+    @property
+    def esta_cerrada(self):
+        return self.estado.es_final
+
+    @property
+    def tiene_responsable(self):
+        return self.area != SIN_AREA
+
+    def cambiar_estado(self, nuevo):
+        if self.esta_cerrada:
+            raise ErrorDeNegocio("la solicitud esta cerrada y no puede modificarse")
+        if nuevo is self.estado:
+            raise ErrorDeNegocio("la solicitud ya se encuentra en ese estado")
+        if self.estado is EstadoSolicitud.PENDIENTE and nuevo is EstadoSolicitud.RESUELTA:
+            raise ErrorDeNegocio("una solicitud pendiente no puede resolverse sin pasar por En proceso")
+        if nuevo is EstadoSolicitud.EN_PROCESO and not self.tiene_responsable:
+            raise ErrorDeNegocio("debe asignar un responsable antes de pasar a En proceso")
+        self.estado = nuevo
+
+    def asignar_area(self, area):
+        if self.esta_cerrada:
+            raise ErrorDeNegocio("no se puede asignar una solicitud cerrada")
+        self.area = area.numero
 
     def a_diccionario(self):
         return {
