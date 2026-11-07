@@ -1,14 +1,16 @@
 import json
 import os
+from collections import Counter
 from datetime import datetime
 
-from dominio import LARGO_LEGAJO, SIN_AREA, EstadoSolicitud, Prioridad, TipoSolicitud
+from dominio import (LARGO_LEGAJO, SIN_AREA, Area, EstadoSolicitud, Estudiante, Prioridad, Solicitud,
+                     TipoSolicitud)
 
 # areas responsables (hardcodeadas por ahora)
 areas = [
-    {"id": 1, "nombre": "Bedelia", "responsable": "Laura Gomez"},
-    {"id": 2, "nombre": "Secretaria Academica", "responsable": "Martin Ruiz"},
-    {"id": 3, "nombre": "Departamento de Alumnos", "responsable": "Sofia Herrera"},
+    Area(1, "Bedelia", "Laura Gomez"),
+    Area(2, "Secretaria Academica", "Martin Ruiz"),
+    Area(3, "Departamento de Alumnos", "Sofia Herrera"),
 ]
 
 ESTADOS_CERRADOS = (EstadoSolicitud.RESUELTA, EstadoSolicitud.RECHAZADA)
@@ -28,8 +30,8 @@ class Sistema:
                 f = open("datos.json", "r", encoding="utf-8")
                 d = json.load(f)
                 f.close()
-                self.est = d["estudiantes"]
-                self.lista = d["solicitudes"]
+                self.est = [Estudiante.desde_diccionario(e) for e in d["estudiantes"]]
+                self.lista = [Solicitud.desde_diccionario(s) for s in d["solicitudes"]]
                 self.cont = d["contador"]
         except:
             pass
@@ -37,7 +39,11 @@ class Sistema:
     def guardar(self):
         try:
             f = open("datos.json", "w", encoding="utf-8")
-            json.dump({"estudiantes": self.est, "solicitudes": self.lista, "contador": self.cont}, f, indent=2, ensure_ascii=False)
+            json.dump({
+                "estudiantes": [e.a_diccionario() for e in self.est],
+                "solicitudes": [s.a_diccionario() for s in self.lista],
+                "contador": self.cont,
+            }, f, indent=2, ensure_ascii=False)
             f.close()
         except:
             print("error")
@@ -59,9 +65,10 @@ class Sistema:
         if self._buscar_estudiante(legajo) is not None:
             print("Error: ya existe un estudiante con ese legajo")
             return
-        self.est.append({"legajo": legajo, "nombre": nombre, "apellido": apellido, "email": email})
+        e = Estudiante(legajo, nombre, apellido, email)
+        self.est.append(e)
         self.guardar()
-        print("Estudiante registrado: " + apellido + ", " + nombre)
+        print("Estudiante registrado: " + e.nombre_completo)
 
     def registrar_solicitud(self):
         legajo = input("Legajo del estudiante: ")
@@ -85,49 +92,37 @@ class Sistema:
             return
         p = self._calcular_prioridad(t, desc)
         fecha = datetime.now().strftime("%Y-%m-%d")
-        s = self.crear_solicitud(self.cont, e["legajo"], e["nombre"], e["apellido"], e["email"], t.codigo, desc, p.codigo,
-                                 EstadoSolicitud.PENDIENTE.codigo, SIN_AREA, fecha)
+        s = self.crear_solicitud(self.cont, e.legajo, e.nombre, e.apellido, e.email, t, desc, p,
+                                 EstadoSolicitud.PENDIENTE, SIN_AREA, fecha)
         self.lista.append(s)
         self.cont = self.cont + 1
         self.guardar()
-        print("Solicitud #" + str(s["id"]) + " registrada con prioridad " + p.etiqueta)
+        print("Solicitud #" + str(s.numero) + " registrada con prioridad " + p.etiqueta)
 
     def crear_solicitud(self, id, legajo, nombre, apellido, email, tipo, descripcion, prioridad, estado, area, fecha):
-        s = {}
-        s["id"] = id
-        s["legajo"] = legajo
-        s["estudiante"] = apellido + ", " + nombre
-        s["email"] = email
-        s["tipo"] = tipo
-        s["descripcion"] = descripcion
-        s["prioridad"] = prioridad
-        s["estado"] = estado
-        s["area"] = area
-        s["fecha"] = fecha
-        return s
+        return Solicitud(id, legajo, apellido + ", " + nombre, email, tipo, descripcion, prioridad, estado, area, fecha)
 
     def cambiar_estado(self):
         s = self._pedir_solicitud_abierta("Error: la solicitud esta cerrada y no puede modificarse")
         if s is None:
             return
-        actual = EstadoSolicitud.desde_codigo(s["estado"])
-        print("Estado actual: " + actual.etiqueta)
+        print("Estado actual: " + s.estado.etiqueta)
         for numero, estado in enumerate(EstadoSolicitud, start=1):
             print(str(numero) + ". " + estado.etiqueta)
         nuevo = self._estado_desde_opcion(input("Nuevo estado: "))
         if nuevo is None:
             print("Error: estado invalido")
             return
-        if nuevo is actual:
+        if nuevo is s.estado:
             print("Error: la solicitud ya se encuentra en ese estado")
             return
-        if actual is EstadoSolicitud.PENDIENTE and nuevo is EstadoSolicitud.RESUELTA:
+        if s.estado is EstadoSolicitud.PENDIENTE and nuevo is EstadoSolicitud.RESUELTA:
             print("Error: una solicitud pendiente no puede resolverse sin pasar por En proceso")
             return
-        if nuevo is EstadoSolicitud.EN_PROCESO and s["area"] == SIN_AREA:
+        if nuevo is EstadoSolicitud.EN_PROCESO and s.area == SIN_AREA:
             print("Error: debe asignar un responsable antes de pasar a En proceso")
             return
-        s["estado"] = nuevo.codigo
+        s.estado = nuevo
         self.guardar()
         print("Estado actualizado")
 
@@ -137,14 +132,14 @@ class Sistema:
             return
         print("Areas disponibles:")
         for a in areas:
-            print(str(a["id"]) + ". " + a["nombre"] + " (" + a["responsable"] + ")")
+            print(str(a.numero) + ". " + a.nombre + " (" + a.responsable + ")")
         area = self._buscar_area(input("Area: "))
         if area is None:
             print("Error: area invalida")
             return
-        s["area"] = area["id"]
+        s.area = area.numero
         self.guardar()
-        print("Solicitud #" + str(s["id"]) + " asignada a " + area["nombre"] + " (" + area["responsable"] + ")")
+        print("Solicitud #" + str(s.numero) + " asignada a " + area.nombre + " (" + area.responsable + ")")
 
     def listar(self):
         if len(self.lista) == 0:
@@ -168,19 +163,23 @@ class Sistema:
             print("No hay solicitudes para reportar")
             return
         total = len(self.lista)
+        por_estado = Counter(s.estado for s in self.lista)
+        por_tipo = Counter(s.tipo for s in self.lista)
+        por_prioridad = Counter(s.prioridad for s in self.lista)
+        sin_responsable = len(self._filtrar(lambda s: s.area == SIN_AREA))
         print("===== REPORTE DE SOLICITUDES =====")
         print("Total: " + str(total))
         print("Por estado:")
         for estado in EstadoSolicitud:
-            print("  " + estado.etiqueta + ": " + str(self._contar("estado", estado.codigo)))
+            print("  " + estado.etiqueta + ": " + str(por_estado[estado]))
         print("Por tipo:")
         for tipo in TipoSolicitud:
-            print("  " + tipo.etiqueta + ": " + str(self._contar("tipo", tipo.codigo)))
+            print("  " + tipo.etiqueta + ": " + str(por_tipo[tipo]))
         print("Por prioridad:")
         for prioridad in reversed(Prioridad):
-            print("  " + prioridad.etiqueta + ": " + str(self._contar("prioridad", prioridad.codigo)))
-        print("Sin responsable asignado: " + str(self._contar("area", SIN_AREA)))
-        resueltas = self._contar("estado", EstadoSolicitud.RESUELTA.codigo)
+            print("  " + prioridad.etiqueta + ": " + str(por_prioridad[prioridad]))
+        print("Sin responsable asignado: " + str(sin_responsable))
+        resueltas = por_estado[EstadoSolicitud.RESUELTA]
         print("Porcentaje resueltas: " + str(round(resueltas * 100 / total, 1)) + "%")
 
     def _legajo_valido(self, legajo):
@@ -211,24 +210,24 @@ class Sistema:
 
     def _buscar_estudiante(self, legajo):
         for e in self.est:
-            if e["legajo"] == legajo:
+            if e.legajo == legajo:
                 return e
         return None
 
     def _buscar_solicitud(self, numero):
         for s in self.lista:
-            if s["id"] == numero:
+            if s.numero == numero:
                 return s
         return None
 
     def _buscar_area(self, texto):
         for a in areas:
-            if texto.isdigit() and a["id"] == int(texto):
+            if texto.isdigit() and a.numero == int(texto):
                 return a
         return None
 
     def _esta_cerrada(self, s):
-        return EstadoSolicitud.desde_codigo(s["estado"]) in ESTADOS_CERRADOS
+        return s.estado in ESTADOS_CERRADOS
 
     def _pedir_solicitud_abierta(self, mensaje_si_esta_cerrada):
         i = input("ID de solicitud: ")
@@ -264,40 +263,34 @@ class Sistema:
             if e is None:
                 print("Error: estado invalido")
                 return None
-            return self._filtrar("estado", e.codigo)
+            return self._filtrar(lambda s: s.estado is e)
         if f == "3":
             print("  ".join(str(t.codigo) + ". " + t.etiqueta for t in TipoSolicitud))
             t = self._tipo_desde_texto(input("Tipo: "))
             if t is None:
                 print("Error: tipo invalido")
                 return None
-            return self._filtrar("tipo", t.codigo)
+            return self._filtrar(lambda s: s.tipo is t)
         if f == "4":
             opciones = ", ".join(str(p.codigo) + "=" + p.etiqueta for p in Prioridad)
             p = self._prioridad_desde_texto(input("Prioridad (" + opciones + "): "))
             if p is None:
                 print("Error: prioridad invalida")
                 return None
-            return self._filtrar("prioridad", p.codigo)
+            return self._filtrar(lambda s: s.prioridad is p)
         print("Error: filtro invalido")
         return None
 
-    def _filtrar(self, clave, valor):
-        return [s for s in self.lista if s[clave] == valor]
-
-    def _contar(self, clave, valor):
-        return len(self._filtrar(clave, valor))
+    def _filtrar(self, condicion):
+        return [s for s in self.lista if condicion(s)]
 
     def _imprimir_solicitud(self, s):
-        tipo = TipoSolicitud.desde_codigo(s["tipo"])
-        prioridad = Prioridad.desde_codigo(s["prioridad"])
-        estado = EstadoSolicitud.desde_codigo(s["estado"])
-        print("#" + str(s["id"]) + " | " + tipo.etiqueta + " | " + prioridad.etiqueta + " | " + estado.etiqueta
-              + " | " + s["estudiante"] + " (" + s["legajo"] + ") | Area: " + self._nombre_area(s["area"]))
-        print("    " + s["descripcion"])
+        print("#" + str(s.numero) + " | " + s.tipo.etiqueta + " | " + s.prioridad.etiqueta + " | " + s.estado.etiqueta
+              + " | " + s.estudiante + " (" + s.legajo + ") | Area: " + self._nombre_area(s.area))
+        print("    " + s.descripcion)
 
-    def _nombre_area(self, id_area):
+    def _nombre_area(self, numero_area):
         for a in areas:
-            if a["id"] == id_area:
-                return a["nombre"]
+            if a.numero == numero_area:
+                return a.nombre
         return "Sin asignar"
