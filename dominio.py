@@ -64,12 +64,31 @@ class Area:
     responsable: str
 
 
+def validar_legajo(legajo):
+    if not (legajo.isdigit() and len(legajo) == LARGO_LEGAJO):
+        raise ErrorDeNegocio(f"legajo invalido (debe tener {LARGO_LEGAJO} digitos)")
+
+
+def email_valido(email):
+    return "@" in email and "." in email.split("@")[-1]
+
+
 @dataclass
 class Estudiante:
     legajo: str
     nombre: str
     apellido: str
     email: str
+
+    @classmethod
+    def nuevo(cls, legajo, nombre, apellido, email):
+        # Mismo orden de validacion que la version base, para mostrar los mismos mensajes.
+        validar_legajo(legajo)
+        if nombre == "" or apellido == "":
+            raise ErrorDeNegocio("nombre y apellido son obligatorios")
+        if not email_valido(email):
+            raise ErrorDeNegocio("email invalido")
+        return cls(legajo, nombre, apellido, email)
 
     @property
     def nombre_completo(self):
@@ -88,6 +107,10 @@ class DatosSolicitud:
     estudiante: Estudiante
     tipo: TipoSolicitud
     descripcion: str
+
+    def __post_init__(self):
+        if self.descripcion.strip() == "":
+            raise ErrorDeNegocio("la descripcion es obligatoria")
 
     def calcular_prioridad(self):
         prioridad = self.tipo.prioridad_base
@@ -123,9 +146,16 @@ class Solicitud:
     def tiene_responsable(self):
         return self.area != SIN_AREA
 
-    def cambiar_estado(self, nuevo):
+    def verificar_que_admite_cambio_de_estado(self):
         if self.esta_cerrada:
             raise ErrorDeNegocio("la solicitud esta cerrada y no puede modificarse")
+
+    def verificar_que_admite_asignacion(self):
+        if self.esta_cerrada:
+            raise ErrorDeNegocio("no se puede asignar una solicitud cerrada")
+
+    def cambiar_estado(self, nuevo):
+        self.verificar_que_admite_cambio_de_estado()
         if nuevo is self.estado:
             raise ErrorDeNegocio("la solicitud ya se encuentra en ese estado")
         if self.estado is EstadoSolicitud.PENDIENTE and nuevo is EstadoSolicitud.RESUELTA:
@@ -135,8 +165,7 @@ class Solicitud:
         self.estado = nuevo
 
     def asignar_area(self, area):
-        if self.esta_cerrada:
-            raise ErrorDeNegocio("no se puede asignar una solicitud cerrada")
+        self.verificar_que_admite_asignacion()
         self.area = area.numero
 
     def a_diccionario(self):
