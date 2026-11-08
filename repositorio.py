@@ -1,8 +1,13 @@
 import json
+import os
 from abc import ABC, abstractmethod
 from pathlib import Path
 
 from dominio import Estudiante, Solicitud
+
+
+class ErrorDePersistencia(Exception):
+    pass
 
 
 class RepositorioEstudiantes(ABC):
@@ -88,24 +93,37 @@ class RepositorioJson(RepositorioEnMemoria):
         self._cargar()
 
     def _cargar(self):
+        # Si el archivo existe pero no se puede leer, no se arranca con las listas
+        # vacias: la proxima operacion lo sobrescribiria y se perderian los datos.
+        if not self._ruta.exists():
+            return
         try:
-            if self._ruta.exists():
-                with open(self._ruta, "r", encoding="utf-8") as archivo:
-                    datos = json.load(archivo)
-                self._estudiantes = [Estudiante.desde_diccionario(e) for e in datos["estudiantes"]]
-                self._solicitudes = [Solicitud.desde_diccionario(s) for s in datos["solicitudes"]]
-                self._proximo_numero = datos["contador"]
-        except Exception:
-            pass
+            with open(self._ruta, "r", encoding="utf-8") as archivo:
+                datos = json.load(archivo)
+            estudiantes = [Estudiante.desde_diccionario(e) for e in datos["estudiantes"]]
+            solicitudes = [Solicitud.desde_diccionario(s) for s in datos["solicitudes"]]
+            proximo_numero = datos["contador"]
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            raise ErrorDePersistencia(
+                f"no se pudo leer el archivo de datos {self._ruta.name} ({error}). "
+                "El archivo no se modifico: reviselo o restaurelo desde una copia antes de volver a ejecutar."
+            ) from error
+        self._estudiantes = estudiantes
+        self._solicitudes = solicitudes
+        self._proximo_numero = proximo_numero
 
     def _persistir(self):
+        # Se escribe en un archivo temporal y despues se reemplaza el original, para
+        # que un corte a mitad de la escritura no deje el archivo danado.
         datos = {
             "estudiantes": [e.a_diccionario() for e in self._estudiantes],
             "solicitudes": [s.a_diccionario() for s in self._solicitudes],
             "contador": self._proximo_numero,
         }
+        temporal = self._ruta.with_name(self._ruta.name + ".tmp")
         try:
-            with open(self._ruta, "w", encoding="utf-8") as archivo:
+            with open(temporal, "w", encoding="utf-8") as archivo:
                 json.dump(datos, archivo, indent=2, ensure_ascii=False)
-        except OSError:
-            print("error")
+            os.replace(temporal, self._ruta)
+        except OSError as error:
+            raise ErrorDePersistencia(f"no se pudo guardar el archivo de datos {self._ruta.name} ({error})") from error
