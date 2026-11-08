@@ -1,5 +1,3 @@
-import json
-import os
 from collections import Counter
 from datetime import datetime
 
@@ -16,35 +14,9 @@ areas = [
 
 class Sistema:
 
-    def __init__(self):
-        self.lista = []
-        self.est = []
-        self.cont = 1
-        self.cargar()
-
-    def cargar(self):
-        try:
-            if os.path.exists("datos.json"):
-                f = open("datos.json", "r", encoding="utf-8")
-                d = json.load(f)
-                f.close()
-                self.est = [Estudiante.desde_diccionario(e) for e in d["estudiantes"]]
-                self.lista = [Solicitud.desde_diccionario(s) for s in d["solicitudes"]]
-                self.cont = d["contador"]
-        except:
-            pass
-
-    def guardar(self):
-        try:
-            f = open("datos.json", "w", encoding="utf-8")
-            json.dump({
-                "estudiantes": [e.a_diccionario() for e in self.est],
-                "solicitudes": [s.a_diccionario() for s in self.lista],
-                "contador": self.cont,
-            }, f, indent=2, ensure_ascii=False)
-            f.close()
-        except:
-            print("error")
+    def __init__(self, estudiantes, solicitudes):
+        self.estudiantes = estudiantes
+        self.solicitudes = solicitudes
 
     def registrar_estudiante(self):
         legajo = input("Legajo: ")
@@ -60,12 +32,11 @@ class Sistema:
         if not self._email_valido(email):
             print("Error: email invalido")
             return
-        if self._buscar_estudiante(legajo) is not None:
+        if self.estudiantes.buscar_estudiante(legajo) is not None:
             print("Error: ya existe un estudiante con ese legajo")
             return
         e = Estudiante(legajo, nombre, apellido, email)
-        self.est.append(e)
-        self.guardar()
+        self.estudiantes.agregar_estudiante(e)
         print("Estudiante registrado: " + e.nombre_completo)
 
     def registrar_solicitud(self):
@@ -73,7 +44,7 @@ class Sistema:
         if not self._legajo_valido(legajo):
             print("Error: legajo invalido (debe tener 5 digitos)")
             return
-        e = self._buscar_estudiante(legajo)
+        e = self.estudiantes.buscar_estudiante(legajo)
         if e is None:
             print("Error: estudiante no encontrado")
             return
@@ -90,10 +61,8 @@ class Sistema:
             return
         datos = DatosSolicitud(e, t, desc)
         fecha = datetime.now().strftime("%Y-%m-%d")
-        s = Solicitud.crear(self.cont, datos, fecha)
-        self.lista.append(s)
-        self.cont = self.cont + 1
-        self.guardar()
+        s = Solicitud.crear(self.solicitudes.proximo_numero(), datos, fecha)
+        self.solicitudes.agregar_solicitud(s)
         print("Solicitud #" + str(s.numero) + " registrada con prioridad " + s.prioridad.etiqueta)
 
     def cambiar_estado(self):
@@ -112,7 +81,7 @@ class Sistema:
         except ErrorDeNegocio as error:
             print("Error: " + str(error))
             return
-        self.guardar()
+        self.solicitudes.actualizar_solicitud(s)
         print("Estado actualizado")
 
     def asignar_responsable(self):
@@ -127,11 +96,11 @@ class Sistema:
             print("Error: area invalida")
             return
         s.asignar_area(area)
-        self.guardar()
+        self.solicitudes.actualizar_solicitud(s)
         print("Solicitud #" + str(s.numero) + " asignada a " + area.nombre + " (" + area.responsable + ")")
 
     def listar(self):
-        if len(self.lista) == 0:
+        if len(self.solicitudes.listar_solicitudes()) == 0:
             print("No hay solicitudes")
             return
         print("1. Todas")
@@ -148,13 +117,14 @@ class Sistema:
             self._imprimir_solicitud(s)
 
     def reporte(self):
-        if len(self.lista) == 0:
+        todas = self.solicitudes.listar_solicitudes()
+        if len(todas) == 0:
             print("No hay solicitudes para reportar")
             return
-        total = len(self.lista)
-        por_estado = Counter(s.estado for s in self.lista)
-        por_tipo = Counter(s.tipo for s in self.lista)
-        por_prioridad = Counter(s.prioridad for s in self.lista)
+        total = len(todas)
+        por_estado = Counter(s.estado for s in todas)
+        por_tipo = Counter(s.tipo for s in todas)
+        por_prioridad = Counter(s.prioridad for s in todas)
         sin_responsable = len(self._filtrar(lambda s: s.area == SIN_AREA))
         print("===== REPORTE DE SOLICITUDES =====")
         print("Total: " + str(total))
@@ -197,18 +167,6 @@ class Sistema:
                 return prioridad
         return None
 
-    def _buscar_estudiante(self, legajo):
-        for e in self.est:
-            if e.legajo == legajo:
-                return e
-        return None
-
-    def _buscar_solicitud(self, numero):
-        for s in self.lista:
-            if s.numero == numero:
-                return s
-        return None
-
     def _buscar_area(self, texto):
         for a in areas:
             if texto.isdigit() and a.numero == int(texto):
@@ -220,7 +178,7 @@ class Sistema:
         if not i.isdigit():
             print("Error: id invalido")
             return None
-        s = self._buscar_solicitud(int(i))
+        s = self.solicitudes.buscar_solicitud(int(i))
         if s is None:
             print("Error: solicitud no encontrada")
             return None
@@ -231,7 +189,7 @@ class Sistema:
 
     def _pedir_filtro(self, f):
         if f == "1":
-            return list(self.lista)
+            return self.solicitudes.listar_solicitudes()
         if f == "2":
             print("  ".join(str(n) + ". " + e.etiqueta for n, e in enumerate(EstadoSolicitud, start=1)))
             e = self._estado_desde_opcion(input("Estado: "))
@@ -257,7 +215,7 @@ class Sistema:
         return None
 
     def _filtrar(self, condicion):
-        return [s for s in self.lista if condicion(s)]
+        return [s for s in self.solicitudes.listar_solicitudes() if condicion(s)]
 
     def _imprimir_solicitud(self, s):
         print("#" + str(s.numero) + " | " + s.tipo.etiqueta + " | " + s.prioridad.etiqueta + " | " + s.estado.etiqueta

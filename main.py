@@ -1,4 +1,7 @@
+from repositorio import RepositorioJson
 from sistema import Sistema
+
+ARCHIVO_DATOS = "datos.json"
 
 
 def menu():
@@ -13,7 +16,8 @@ def menu():
     print("0. Salir")
 
 
-s = Sistema()
+repositorio = RepositorioJson(ARCHIVO_DATOS)
+s = Sistema(repositorio, repositorio)
 while True:
     menu()
     op = input("Opcion: ")
