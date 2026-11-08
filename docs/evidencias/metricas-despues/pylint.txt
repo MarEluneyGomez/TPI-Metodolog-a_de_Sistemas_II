@@ -1,0 +1,6 @@
+************* Module dominio
+dominio.py:135:0: R0902: Too many instance attributes (10/7) (too-many-instance-attributes)
+
+-----------------------------------
+Your code has been rated at 9.98/10
+

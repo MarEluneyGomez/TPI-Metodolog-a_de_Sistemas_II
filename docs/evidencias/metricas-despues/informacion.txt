@@ -1,0 +1,10 @@
+Version medida: etapa-refactoring (commit 759f080)
+Archivos medidos: consola.py, dominio.py, main.py, repositorio.py, servicio.py
+Python 3.13.3
+radon 6.0.1
+pylint 4.1.3 (astroid 4.3.4)
+Comandos:
+  radon cc -s -a <archivos>
+  radon mi -s <archivos>
+  radon raw -s <archivos>
+  pylint --disable=C0114,C0115,C0116 --persistent=n <archivos>

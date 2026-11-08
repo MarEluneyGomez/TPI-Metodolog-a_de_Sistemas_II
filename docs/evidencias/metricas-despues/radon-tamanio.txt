@@ -1,0 +1,72 @@
+consola.py
+    LOC: 185
+    LLOC: 148
+    SLOC: 164
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 21
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+dominio.py
+    LOC: 223
+    LLOC: 154
+    SLOC: 175
+    Comments: 3
+    Single comments: 3
+    Multi: 0
+    Blank: 45
+    - Comment Stats
+        (C % L): 1%
+        (C % S): 2%
+        (C + M % L): 1%
+main.py
+    LOC: 24
+    LLOC: 17
+    SLOC: 18
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 6
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+repositorio.py
+    LOC: 131
+    LLOC: 89
+    SLOC: 97
+    Comments: 4
+    Single comments: 4
+    Multi: 0
+    Blank: 30
+    - Comment Stats
+        (C % L): 3%
+        (C % S): 4%
+        (C + M % L): 3%
+servicio.py
+    LOC: 113
+    LLOC: 85
+    SLOC: 91
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 22
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+** Total **
+    LOC: 676
+    LLOC: 493
+    SLOC: 545
+    Comments: 7
+    Single comments: 7
+    Multi: 0
+    Blank: 124
+    - Comment Stats
+        (C % L): 1%
+        (C % S): 1%
+        (C + M % L): 1%

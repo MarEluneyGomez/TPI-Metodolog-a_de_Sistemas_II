@@ -1,0 +1,5 @@
+consola.py - A (29.74)
+dominio.py - A (36.78)
+main.py - A (64.42)
+repositorio.py - A (51.73)
+servicio.py - A (35.72)
