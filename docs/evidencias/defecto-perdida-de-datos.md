@@ -44,3 +44,15 @@ La estudiante Ana (10001) se perdió y el sistema no mostró ningún aviso.
 ## Conclusión
 
 Un problema de calidad interna (manejo de errores que silencia fallas) termina siendo un defecto de calidad externa que el usuario no ve hasta que ya perdió los datos. Se corrige en la etapa de refactoring y la corrección se verifica con un test específico.
+
+## Corrección
+
+Se corrigió en el commit `1e2f04a` ("fix: no sobrescribir datos.json cuando el archivo esta danado").
+
+Con el mismo archivo dañado, el sistema ahora muestra el error y termina sin modificar `datos.json`:
+
+```
+Error: no se pudo leer el archivo de datos datos.json (Expecting ',' delimiter: line 1 column 135 (char 134)). El archivo no se modifico: reviselo o restaurelo desde una copia antes de volver a ejecutar.
+```
+
+El test `tests/test_archivo_danado.py` reproduce este caso y verifica que el archivo quede intacto.
