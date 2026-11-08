@@ -53,11 +53,14 @@ class InterfazConsola:
             self._escribir(f"{tipo.codigo}. {tipo.etiqueta}")
         tipo = self._leer_tipo()
         descripcion = self._leer("Descripcion: ")
-        solicitud = self._servicio.registrar_solicitud(DatosSolicitud(estudiante, tipo, descripcion))
-        self._escribir(f"Solicitud #{solicitud.numero} registrada con prioridad {solicitud.prioridad.etiqueta}")
+        datos = DatosSolicitud(estudiante, tipo, descripcion)
+        solicitud = self._servicio.registrar_solicitud(datos)
+        self._escribir(f"Solicitud #{solicitud.numero} registrada con prioridad "
+                       f"{solicitud.prioridad.etiqueta}")
 
     def cambiar_estado(self):
-        solicitud = self._servicio.solicitud_para_cambiar_estado(self._leer_numero_de_solicitud())
+        numero = self._leer_numero_de_solicitud()
+        solicitud = self._servicio.solicitud_para_cambiar_estado(numero)
         self._escribir("Estado actual: " + solicitud.estado.etiqueta)
         for numero, estado in enumerate(EstadoSolicitud, start=1):
             self._escribir(f"{numero}. {estado.etiqueta}")
@@ -74,7 +77,8 @@ class InterfazConsola:
         if not texto.isdigit():
             raise EntradaInvalida("area invalida")
         area = self._servicio.asignar_area(solicitud.numero, int(texto))
-        self._escribir(f"Solicitud #{solicitud.numero} asignada a {area.nombre} ({area.responsable})")
+        self._escribir(
+            f"Solicitud #{solicitud.numero} asignada a {area.nombre} ({area.responsable})")
 
     def listar(self):
         if not self._servicio.hay_solicitudes():
@@ -126,27 +130,33 @@ class InterfazConsola:
         self._escribir("0. Salir")
 
     def _mostrar_solicitud(self, solicitud):
-        area = self._servicio.buscar_area(solicitud.area)
+        area = self._servicio.buscar_area(solicitud.numero_area)
         nombre_area = area.nombre if area is not None else "Sin asignar"
-        self._escribir(
-            f"#{solicitud.numero} | {solicitud.tipo.etiqueta} | {solicitud.prioridad.etiqueta}"
-            f" | {solicitud.estado.etiqueta} | {solicitud.estudiante} ({solicitud.legajo}) | Area: {nombre_area}"
-        )
+        columnas = [
+            f"#{solicitud.numero}",
+            solicitud.tipo.etiqueta,
+            solicitud.prioridad.etiqueta,
+            solicitud.estado.etiqueta,
+            f"{solicitud.nombre_estudiante} ({solicitud.legajo})",
+            f"Area: {nombre_area}",
+        ]
+        self._escribir(" | ".join(columnas))
         self._escribir("    " + solicitud.descripcion)
 
     def _sin_filtro(self):
         return {}
 
     def _filtro_por_estado(self):
-        self._escribir("  ".join(f"{n}. {e.etiqueta}" for n, e in enumerate(EstadoSolicitud, start=1)))
+        estados = enumerate(EstadoSolicitud, start=1)
+        self._escribir("  ".join(f"{numero}. {estado.etiqueta}" for numero, estado in estados))
         return {"estado": self._leer_estado("Estado: ")}
 
     def _filtro_por_tipo(self):
-        self._escribir("  ".join(f"{t.codigo}. {t.etiqueta}" for t in TipoSolicitud))
+        self._escribir("  ".join(f"{tipo.codigo}. {tipo.etiqueta}" for tipo in TipoSolicitud))
         return {"tipo": self._leer_tipo()}
 
     def _filtro_por_prioridad(self):
-        opciones = ", ".join(f"{p.codigo}={p.etiqueta}" for p in Prioridad)
+        opciones = ", ".join(f"{prioridad.codigo}={prioridad.etiqueta}" for prioridad in Prioridad)
         texto = self._leer(f"Prioridad ({opciones}): ")
         for prioridad in Prioridad:
             if texto == str(prioridad.codigo):

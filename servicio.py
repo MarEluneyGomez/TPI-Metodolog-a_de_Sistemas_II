@@ -2,14 +2,7 @@ from collections import Counter
 from dataclasses import dataclass
 from datetime import date
 
-from dominio import Area, ErrorDeNegocio, EstadoSolicitud, Estudiante, Solicitud, validar_legajo
-
-# areas responsables (hardcodeadas por ahora)
-areas = [
-    Area(1, "Bedelia", "Laura Gomez"),
-    Area(2, "Secretaria Academica", "Martin Ruiz"),
-    Area(3, "Departamento de Alumnos", "Sofia Herrera"),
-]
+from dominio import ErrorDeNegocio, EstadoSolicitud, Estudiante, Solicitud, validar_legajo
 
 
 @dataclass(frozen=True)
@@ -31,9 +24,10 @@ def fecha_de_hoy():
 
 class ServicioSolicitudes:
 
-    def __init__(self, estudiantes, solicitudes, obtener_fecha=fecha_de_hoy):
+    def __init__(self, estudiantes, solicitudes, areas, obtener_fecha=fecha_de_hoy):
         self._estudiantes = estudiantes
         self._solicitudes = solicitudes
+        self._areas = tuple(areas)
         self._obtener_fecha = obtener_fecha
 
     def registrar_estudiante(self, legajo, nombre, apellido, email):
@@ -51,7 +45,8 @@ class ServicioSolicitudes:
         return estudiante
 
     def registrar_solicitud(self, datos):
-        solicitud = Solicitud.crear(self._solicitudes.proximo_numero(), datos, self._obtener_fecha())
+        numero = self._solicitudes.proximo_numero()
+        solicitud = Solicitud.crear(numero, datos, self._obtener_fecha())
         self._solicitudes.agregar_solicitud(solicitud)
         return solicitud
 
@@ -70,9 +65,6 @@ class ServicioSolicitudes:
         solicitud.verificar_que_admite_asignacion()
         return solicitud
 
-    def areas_disponibles(self):
-        return list(areas)
-
     def asignar_area(self, numero, numero_area):
         area = self.buscar_area(numero_area)
         if area is None:
@@ -82,8 +74,11 @@ class ServicioSolicitudes:
         self._solicitudes.actualizar_solicitud(solicitud)
         return area
 
+    def areas_disponibles(self):
+        return self._areas
+
     def buscar_area(self, numero_area):
-        for area in areas:
+        for area in self._areas:
             if area.numero == numero_area:
                 return area
         return None

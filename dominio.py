@@ -64,6 +64,13 @@ class Area:
     responsable: str
 
 
+AREAS_RESPONSABLES = (
+    Area(1, "Bedelia", "Laura Gomez"),
+    Area(2, "Secretaria Academica", "Martin Ruiz"),
+    Area(3, "Departamento de Alumnos", "Sofia Herrera"),
+)
+
+
 def validar_legajo(legajo):
     if not (legajo.isdigit() and len(legajo) == LARGO_LEGAJO):
         raise ErrorDeNegocio(f"legajo invalido (debe tener {LARGO_LEGAJO} digitos)")
@@ -95,7 +102,12 @@ class Estudiante:
         return f"{self.apellido}, {self.nombre}"
 
     def a_diccionario(self):
-        return {"legajo": self.legajo, "nombre": self.nombre, "apellido": self.apellido, "email": self.email}
+        return {
+            "legajo": self.legajo,
+            "nombre": self.nombre,
+            "apellido": self.apellido,
+            "email": self.email,
+        }
 
     @classmethod
     def desde_diccionario(cls, datos):
@@ -121,22 +133,34 @@ class DatosSolicitud:
 
 @dataclass
 class Solicitud:
+    # El nombre y el email del estudiante se guardan copiados dentro de la
+    # solicitud para mantener el formato de datos.json de la version base.
     numero: int
     legajo: str
-    estudiante: str
-    email: str
+    nombre_estudiante: str
+    email_estudiante: str
     tipo: TipoSolicitud
     descripcion: str
     prioridad: Prioridad
     estado: EstadoSolicitud
-    area: int
+    numero_area: int
     fecha: str
 
     @classmethod
     def crear(cls, numero, datos, fecha):
         estudiante = datos.estudiante
-        return cls(numero, estudiante.legajo, estudiante.nombre_completo, estudiante.email, datos.tipo,
-                   datos.descripcion, datos.calcular_prioridad(), EstadoSolicitud.PENDIENTE, SIN_AREA, fecha)
+        return cls(
+            numero=numero,
+            legajo=estudiante.legajo,
+            nombre_estudiante=estudiante.nombre_completo,
+            email_estudiante=estudiante.email,
+            tipo=datos.tipo,
+            descripcion=datos.descripcion,
+            prioridad=datos.calcular_prioridad(),
+            estado=EstadoSolicitud.PENDIENTE,
+            numero_area=SIN_AREA,
+            fecha=fecha,
+        )
 
     @property
     def esta_cerrada(self):
@@ -144,7 +168,7 @@ class Solicitud:
 
     @property
     def tiene_responsable(self):
-        return self.area != SIN_AREA
+        return self.numero_area != SIN_AREA
 
     def verificar_que_admite_cambio_de_estado(self):
         if self.esta_cerrada:
@@ -159,26 +183,27 @@ class Solicitud:
         if nuevo is self.estado:
             raise ErrorDeNegocio("la solicitud ya se encuentra en ese estado")
         if self.estado is EstadoSolicitud.PENDIENTE and nuevo is EstadoSolicitud.RESUELTA:
-            raise ErrorDeNegocio("una solicitud pendiente no puede resolverse sin pasar por En proceso")
+            raise ErrorDeNegocio(
+                "una solicitud pendiente no puede resolverse sin pasar por En proceso")
         if nuevo is EstadoSolicitud.EN_PROCESO and not self.tiene_responsable:
             raise ErrorDeNegocio("debe asignar un responsable antes de pasar a En proceso")
         self.estado = nuevo
 
     def asignar_area(self, area):
         self.verificar_que_admite_asignacion()
-        self.area = area.numero
+        self.numero_area = area.numero
 
     def a_diccionario(self):
         return {
             "id": self.numero,
             "legajo": self.legajo,
-            "estudiante": self.estudiante,
-            "email": self.email,
+            "estudiante": self.nombre_estudiante,
+            "email": self.email_estudiante,
             "tipo": self.tipo.codigo,
             "descripcion": self.descripcion,
             "prioridad": self.prioridad.codigo,
             "estado": self.estado.codigo,
-            "area": self.area,
+            "area": self.numero_area,
             "fecha": self.fecha,
         }
 
@@ -187,12 +212,12 @@ class Solicitud:
         return cls(
             numero=datos["id"],
             legajo=datos["legajo"],
-            estudiante=datos["estudiante"],
-            email=datos["email"],
+            nombre_estudiante=datos["estudiante"],
+            email_estudiante=datos["email"],
             tipo=TipoSolicitud.desde_codigo(datos["tipo"]),
             descripcion=datos["descripcion"],
             prioridad=Prioridad.desde_codigo(datos["prioridad"]),
             estado=EstadoSolicitud.desde_codigo(datos["estado"]),
-            area=datos["area"],
+            numero_area=datos["area"],
             fecha=datos["fecha"],
         )

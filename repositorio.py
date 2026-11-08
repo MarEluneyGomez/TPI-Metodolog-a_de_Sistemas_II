@@ -106,7 +106,8 @@ class RepositorioJson(RepositorioEnMemoria):
         except (OSError, ValueError, KeyError, TypeError) as error:
             raise ErrorDePersistencia(
                 f"no se pudo leer el archivo de datos {self._ruta.name} ({error}). "
-                "El archivo no se modifico: reviselo o restaurelo desde una copia antes de volver a ejecutar."
+                "El archivo no se modifico: reviselo o restaurelo desde una copia "
+                "antes de volver a ejecutar."
             ) from error
         self._estudiantes = estudiantes
         self._solicitudes = solicitudes
@@ -126,4 +127,5 @@ class RepositorioJson(RepositorioEnMemoria):
                 json.dump(datos, archivo, indent=2, ensure_ascii=False)
             os.replace(temporal, self._ruta)
         except OSError as error:
-            raise ErrorDePersistencia(f"no se pudo guardar el archivo de datos {self._ruta.name} ({error})") from error
+            raise ErrorDePersistencia(
+                f"no se pudo guardar el archivo de datos {self._ruta.name} ({error})") from error
